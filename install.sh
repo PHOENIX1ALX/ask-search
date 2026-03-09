@@ -21,12 +21,20 @@ fi
 
 # Install global command
 echo "Installing ask-search to $INSTALL_BIN ..."
-cat > /tmp/ask-search-wrapper << WRAPPER
+
+# Create wrapper with hardcoded path (single-quotes prevent $@ expansion in heredoc)
+WRAPPER=$(cat << 'WRAPPEREOF'
 #!/bin/bash
-exec python3 "$SCRIPT_DIR/scripts/core.py" "$@"
-WRAPPER
+exec python3 "COREPATH" "$@"
+WRAPPEREOF
+)
+
+# Replace placeholder with actual path
+WRAPPER="${WRAPPER/COREPATH/$SCRIPT_DIR/scripts/core.py}"
+echo "$WRAPPER" > /tmp/ask-search-wrapper
 
 install -m 755 /tmp/ask-search-wrapper "$INSTALL_BIN/ask-search"
+rm -f /tmp/ask-search-wrapper
 echo "✓ ask-search installed to $INSTALL_BIN/ask-search"
 
 # Test

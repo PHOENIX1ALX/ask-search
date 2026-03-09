@@ -186,6 +186,111 @@ ask-search/
 - Bot detection may block requests from some IPs — add your server IP to `pass_ip` in `limiter.toml`
 - Bind to `127.0.0.1` for security unless you need remote access
 
+## 🌐 Deep-Dive Limitations & Workarounds
+
+`ask-search` returns URLs + snippets from search engine indexes. When your agent needs the **full page content** (deep-dive via `curl` / `web_fetch`), some sites will block depending on your server's network environment:
+
+### What works out of the box
+
+| Site | Search (SearxNG) | Deep-dive (curl/fetch) | Why |
+|------|:-:|:-:|-----|
+| Most sites | ✅ | ✅ | No aggressive anti-bot |
+| Reddit | ✅ | ❌ VPS IP blocked | Reddit blocks datacenter IPs |
+| Zhihu (知乎) | ✅ | ❌ Login wall + fingerprint | Requires browser JS + login |
+| Medium | ✅ | ⚠️ Paywall | Partial content only |
+
+**Key insight**: Search always works because SearxNG queries search engines (Google, Brave, etc.), not the target sites directly. The search engines have already indexed the content. The problem only appears when your agent tries to fetch the full page.
+
+### Solution 1: SOCKS proxy via residential IP
+
+If you have a machine on a residential network (home server, laptop, etc.), create an SSH SOCKS tunnel:
+
+```bash
+# On your VPS/server:
+ssh -f -N -D 127.0.0.1:1082 user@your-home-machine
+
+# Then fetch through the proxy:
+curl -x socks5h://127.0.0.1:1082 "https://reddit.com/r/example/comments/xxx.json"
+```
+
+For Reddit specifically, append `.json` to any post URL for structured data:
+```bash
+# Returns full post + all comments as JSON
+curl -x socks5h://127.0.0.1:1082 \
+  "https://www.reddit.com/r/LocalLLaMA/comments/xxxxx/post_title.json"
+```
+
+To persist the tunnel as a systemd service:
+```ini
+# /etc/systemd/system/socks-proxy.service
+[Unit]
+Description=SSH SOCKS Proxy for web scraping
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -N -D 127.0.0.1:1082 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes user@your-home-machine
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Solution 2: Headless browser for JS-heavy sites
+
+Sites like Zhihu require full browser rendering. Use Playwright with the SOCKS proxy:
+
+```python
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        headless=True,
+        proxy={"server": "socks5://127.0.0.1:1082"}
+    )
+    page = browser.new_page()
+    page.goto("https://example.com/article")
+    content = page.inner_text("article")
+```
+
+> **Note**: Some sites (Zhihu, etc.) detect headless browsers even through proxies. For these, you may need a real browser session with login cookies, or delegate the fetch to an agent running on a local machine (e.g., Claude Code on a Mac).
+
+### Solution 3: Leverage archive caches
+
+When direct access fails, try cached versions:
+
+```bash
+# Archive.org (works surprisingly often for Reddit)
+curl "https://web.archive.org/web/2026/https://reddit.com/r/example/comments/xxx"
+
+# Google Cache (may redirect — not always reliable)
+curl "https://webcache.googleusercontent.com/search?q=cache:example.com/page"
+```
+
+### Solution 4: Multi-node agent architecture
+
+If you run agents on multiple machines (e.g., OpenClaw on VPS + Claude Code on local Mac):
+
+```
+VPS agent: ask-search "query" → gets URLs + snippets
+                ↓
+Local agent: web_fetch(url) → full content (residential IP, no blocks)
+                ↓
+VPS agent: receives full text, analyzes, responds
+```
+
+This is the most robust approach — search on your server, deep-dive from a local machine where anti-bot measures don't apply.
+
+### TL;DR
+
+| Problem | Fix |
+|---------|-----|
+| Reddit blocks your IP | SSH SOCKS proxy + `.json` API |
+| Site needs JS rendering | Playwright + proxy |
+| Site needs login (Zhihu) | Delegate to local agent or use logged-in browser |
+| Everything blocked | Fall back to search snippets + archive caches |
+
 ## 🤝 Contributing
 
 Issues and PRs welcome.
