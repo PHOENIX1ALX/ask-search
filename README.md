@@ -190,6 +190,12 @@ ask-search/
 
 Issues and PRs welcome.
 
+## Acknowledgements
+
+Inspired by [Perplexica](https://github.com/ItzCrazyKns/Perplexica) —
+the idea of using self-hosted SearxNG as a private search backend comes from there.
+ask-search strips it down to a single CLI command for agent use.
+
 ## 📄 License
 
 [MIT](LICENSE)
