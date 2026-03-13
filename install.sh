@@ -31,10 +31,10 @@ WRAPPEREOF
 
 # Replace placeholder with actual path
 WRAPPER="${WRAPPER/COREPATH/$SCRIPT_DIR/scripts/core.py}"
-echo "$WRAPPER" > /tmp/ask-search-wrapper
-
-install -m 755 /tmp/ask-search-wrapper "$INSTALL_BIN/ask-search"
-rm -f /tmp/ask-search-wrapper
+TMPFILE=$(mktemp)
+echo "$WRAPPER" > "$TMPFILE"
+install -m 755 "$TMPFILE" "$INSTALL_BIN/ask-search"
+rm -f "$TMPFILE"
 echo "✓ ask-search installed to $INSTALL_BIN/ask-search"
 
 # Test
